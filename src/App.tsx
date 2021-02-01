@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Box, TextField } from '@material-ui/core';
+// @ts-ignore
+import morse from 'morse';
 
-function App() {
+const App: React.FC = () => {
+  const [text, setText] = useState("SOS");
+  const morseText: string = morse.encode(text);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box m={2}>
+      <TextField
+        label="Text"
+        variant="outlined"
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+      <TextField
+        label="Morse"
+        value={morseText}
+        variant="outlined"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+    </Box>
   );
 }
 
