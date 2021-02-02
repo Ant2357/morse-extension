@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField } from '@material-ui/core';
 // @ts-ignore
-import morse from 'morse';
+import morse from 'morse-decoder';
 
 const App: React.FC = () => {
   const [morseState, setMorseState] = useState({
@@ -9,34 +9,25 @@ const App: React.FC = () => {
     morseText: morse.encode("SOS")
   });
 
-  const encodeMorse = (newText: string) => {
-    setMorseState({
-      text: newText,
-      morseText: morse.encode(newText)
-    })
-  }
-
-  const decodeMorse = (newMorse: string) => {
-    const decodeText: string = morse.decode(newMorse);
-    setMorseState({
-      text: decodeText === " " ? "" : decodeText,
-      morseText: newMorse
-    })
-  }
-
   return (
     <Box m={2}>
       <TextField
         label="Text"
         variant="outlined"
         value={morseState.text}
-        onChange={e => encodeMorse(e.target.value)}
+        onChange={e => setMorseState({
+          text: e.target.value,
+          morseText: morse.encode(e.target.value)
+        })}
       />
       <TextField
         label="Morse"
         variant="outlined"
         value={morseState.morseText}
-        onChange={e => decodeMorse(e.target.value)}
+        onChange={e => setMorseState({
+          text: morse.decode(e.target.value),
+          morseText: e.target.value
+        })}
       />
     </Box>
   );
