@@ -1,34 +1,99 @@
 import React, { useState } from 'react';
-import { Box, TextField } from '@material-ui/core';
+import { makeStyles, Box, Grid, TextField, Button } from '@material-ui/core';
+
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import GetAppIcon from '@material-ui/icons/GetApp';
+
 // @ts-ignore
 import morse from 'morse-decoder';
 
+const useStyles = makeStyles((theme) => ({
+  morseForm: {},
+  morseForm__actionButtons: {
+    '& > *': {
+      marginRight: theme.spacing(1),
+    },
+  },
+}));
+
 const App: React.FC = () => {
-  const [morseState, setMorseState] = useState({
+  const classes = useStyles();
+  const [morseState, setMorseState] = useState<{ text: string; morseText: string; }>({
     text: "SOS",
     morseText: morse.encode("SOS")
   });
 
+  const playMorseAudio = (text: string) => {
+    try {
+      morse.audio(text).play();
+    } catch (_) {
+      alert("モールス信号の再生に失敗しました。");
+    }
+  };
+
+  const downloadMorseAudio = (text: string) => {
+    try {
+      morse.audio(morseState.text).exportWave();
+    } catch (_) {
+      alert("モールス信号のダウンロードに失敗しました。");
+    }
+  };
+
   return (
-    <Box m={2}>
-      <TextField
-        label="Text"
-        variant="outlined"
-        value={morseState.text}
-        onChange={e => setMorseState({
-          text: e.target.value,
-          morseText: morse.encode(e.target.value)
-        })}
-      />
-      <TextField
-        label="Morse"
-        variant="outlined"
-        value={morseState.morseText}
-        onChange={e => setMorseState({
-          text: morse.decode(e.target.value),
-          morseText: e.target.value
-        })}
-      />
+    <Box m={2} className={classes.morseForm}>
+      <Grid container
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+
+        <Grid item xs={12}>
+          <TextField
+            label="Text"
+            variant="outlined"
+            value={morseState.text}
+            onChange={e => setMorseState({
+              text: e.target.value,
+              morseText: morse.encode(e.target.value)
+            })}
+          />
+          <TextField
+            label="Morse"
+            variant="outlined"
+            value={morseState.morseText}
+            onChange={e => setMorseState({
+              text: morse.decode(e.target.value),
+              morseText: e.target.value
+            })}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Box mt={1} className={classes.morseForm__actionButtons}>
+
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<PlayArrowIcon />}
+              onClick={() => playMorseAudio(morseState.text)}
+            >
+              Play the Audio
+            </Button>
+
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<GetAppIcon />}
+              onClick={() => downloadMorseAudio(morseState.text)}
+            >
+              Download
+            </Button>
+          </Box>
+        </Grid>
+
+      </Grid>
     </Box>
   );
 }
