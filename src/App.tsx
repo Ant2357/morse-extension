@@ -40,10 +40,10 @@ const App: React.FC = () => {
     }
   };
 
-    const tweetMorse = (morseText: string): void => {
-      const tweet: string = encodeURIComponent(`${morseText}`);
-      window.open(`https://twitter.com/intent/tweet?text=${tweet}`, "_blank");
-    }
+  const tweetMorse = (morseText: string): void => {
+    const tweet: string = encodeURIComponent(`${morseText}`);
+    window.open(`https://twitter.com/intent/tweet?text=${tweet}`, "_blank");
+  }
 
   return (
     <Box m={2} className={classes.morseForm}>
