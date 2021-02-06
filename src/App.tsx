@@ -3,6 +3,7 @@ import { makeStyles, Box, Grid, TextField, Button } from '@material-ui/core';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import TwitterIcon from '@material-ui/icons/Twitter';
 
 // @ts-ignore
 import morse from 'morse-decoder';
@@ -23,7 +24,7 @@ const App: React.FC = () => {
     morseText: morse.encode("SOS")
   });
 
-  const playMorseAudio = (text: string) => {
+  const playMorseAudio = (text: string): void => {
     try {
       morse.audio(text).play();
     } catch (_) {
@@ -31,13 +32,18 @@ const App: React.FC = () => {
     }
   };
 
-  const downloadMorseAudio = (text: string) => {
+  const downloadMorseAudio = (text: string): void => {
     try {
       morse.audio(morseState.text).exportWave();
     } catch (_) {
       alert("モールス信号のダウンロードに失敗しました。");
     }
   };
+
+    const tweetMorse = (morseText: string): void => {
+      const tweet: string = encodeURIComponent(`${morseText}`);
+      window.open(`https://twitter.com/intent/tweet?text=${tweet}`, "_blank");
+    }
 
   return (
     <Box m={2} className={classes.morseForm}>
@@ -90,6 +96,17 @@ const App: React.FC = () => {
             >
               Download
             </Button>
+
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<TwitterIcon />}
+              onClick={() => tweetMorse(morseState.morseText)}
+            >
+              Tweet
+            </Button>
+
           </Box>
         </Grid>
 
