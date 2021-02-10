@@ -51,6 +51,16 @@ const App: React.FC = () => {
     });
   }
 
+  const updateMorseLanguage = (mState: MorseState, isJpMorse: boolean) => {
+    const newPriority: number = isJpMorse ? 10 : 1;
+    setMorseState({
+      text: morse.decode(mState.morseText, { priority: newPriority }),
+      morseText: morse.encode(mState.text, { priority: newPriority }),
+      isJpMorse: isJpMorse,
+      priority: newPriority
+    })
+  }
+
   const playMorseAudio = (text: string): void => {
     try {
       morse.audio(text).play();
@@ -84,16 +94,7 @@ const App: React.FC = () => {
             control={
               <Switch
                 checked={morseState.isJpMorse}
-                onChange={() => {
-                  const updateIsJpMorse = !morseState.isJpMorse;
-                  const updatePriority: number = updateIsJpMorse ? 10 : 1;
-                  setMorseState({
-                    text: morse.decode(morseState.morseText, { priority: updatePriority }),
-                    morseText: morse.encode(morseState.text, { priority: updatePriority }),
-                    isJpMorse: updateIsJpMorse,
-                    priority: updatePriority
-                  })
-                }}
+                onChange={() => updateMorseLanguage(morseState, !morseState.isJpMorse)}
                 color="primary"
               />
             }
