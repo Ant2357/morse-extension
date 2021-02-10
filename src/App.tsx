@@ -8,6 +8,13 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 // @ts-ignore
 import morse from 'morse-decoder';
 
+type MorseState = {
+  text: string;
+  morseText: string;
+  isJpMorse: boolean;
+  priority: number;
+};
+
 const useStyles = makeStyles((theme) => ({
   morseForm: {},
   morseForm__actionButtons: {
@@ -19,17 +26,30 @@ const useStyles = makeStyles((theme) => ({
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const [morseState, setMorseState] = useState<{
-    text: string;
-    morseText: string;
-    isJpMorse: boolean;
-    priority: number;
-  }>({
+  const [morseState, setMorseState] = useState<MorseState>({
     text: "SOS",
     morseText: morse.encode("SOS"),
     isJpMorse: false,
     priority: 1
   });
+
+  const encodeMorse = (mState: MorseState, newText: string): void => {
+    setMorseState({
+      text: newText,
+      morseText: morse.encode(newText, { priority: mState.priority }),
+      isJpMorse: mState.isJpMorse,
+      priority: mState.priority
+    });
+  }
+
+  const decodeMorse = (mState: MorseState, newMorseText: string): void => {
+    setMorseState({
+      text: morse.decode(newMorseText, { priority: mState.priority }),
+      morseText: newMorseText,
+      isJpMorse: mState.isJpMorse,
+      priority: mState.priority
+    });
+  }
 
   const playMorseAudio = (text: string): void => {
     try {
@@ -87,23 +107,13 @@ const App: React.FC = () => {
               label="Text"
               variant="outlined"
               value={morseState.text}
-              onChange={e => setMorseState({
-                text: e.target.value,
-                morseText: morse.encode(e.target.value, { priority: morseState.priority }),
-                isJpMorse: morseState.isJpMorse,
-                priority: morseState.priority
-              })}
+              onChange={e => encodeMorse(morseState, e.target.value)}
             />
             <TextField
               label="Morse"
               variant="outlined"
               value={morseState.morseText}
-              onChange={e => setMorseState({
-                text: morse.decode(e.target.value, { priority: morseState.priority }),
-                morseText: e.target.value,
-                isJpMorse: morseState.isJpMorse,
-                priority: morseState.priority
-              })}
+              onChange={e => decodeMorse(morseState, e.target.value)}
             />
           </Box>
         </Grid>
