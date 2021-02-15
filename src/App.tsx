@@ -8,6 +8,8 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 // @ts-ignore
 import morse from 'morse-decoder';
 
+import { playMorseAudio, downloadMorseAudio } from 'morse/morseAudio';
+
 type MorseState = {
   text: string;
   morseText: string;
@@ -60,22 +62,6 @@ const App: React.FC = () => {
       priority: newPriority
     })
   }
-
-  const playMorseAudio = (text: string): void => {
-    try {
-      morse.audio(text).play();
-    } catch (_) {
-      alert("モールス信号の再生に失敗しました。");
-    }
-  };
-
-  const downloadMorseAudio = (text: string): void => {
-    try {
-      morse.audio(morseState.text).exportWave();
-    } catch (_) {
-      alert("モールス信号のダウンロードに失敗しました。");
-    }
-  };
 
   const tweetMorse = (morseText: string): void => {
     const tweet: string = encodeURIComponent(`${morseText}`);
