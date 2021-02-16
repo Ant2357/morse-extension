@@ -9,6 +9,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import morse from 'morse-decoder';
 
 import { playMorseAudio, downloadMorseAudio } from 'morse/morseAudio';
+import { tweetMorse } from 'morse/morseTwitter';
 
 type MorseState = {
   text: string;
@@ -61,11 +62,6 @@ const App: React.FC = () => {
       isJpMorse: isJpMorse,
       priority: newPriority
     })
-  }
-
-  const tweetMorse = (morseText: string): void => {
-    const tweet: string = encodeURIComponent(`${morseText}`);
-    window.open(`https://twitter.com/intent/tweet?text=${tweet}`, "_blank");
   }
 
   return (
