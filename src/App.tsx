@@ -1,22 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles, Box, Grid, FormControlLabel, Switch, TextField, Button } from '@material-ui/core';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import TwitterIcon from '@material-ui/icons/Twitter';
 
-// @ts-ignore
-import morse from 'morse-decoder';
-
 import { playMorseAudio, downloadMorseAudio } from 'morse/morseAudio';
 import { tweetMorse } from 'morse/morseTwitter';
-
-type MorseState = {
-  text: string;
-  morseText: string;
-  isJpMorse: boolean;
-  priority: number;
-};
+import { useMorse } from 'morse/useMorse';
 
 const useStyles = makeStyles((theme) => ({
   morseForm: {},
@@ -29,40 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const [morseState, setMorseState] = useState<MorseState>({
-    text: "SOS",
-    morseText: morse.encode("SOS"),
-    isJpMorse: false,
-    priority: 1
-  });
-
-  const encodeMorse = (mState: MorseState, newText: string): void => {
-    setMorseState({
-      text: newText,
-      morseText: morse.encode(newText, { priority: mState.priority }),
-      isJpMorse: mState.isJpMorse,
-      priority: mState.priority
-    });
-  }
-
-  const decodeMorse = (mState: MorseState, newMorseText: string): void => {
-    setMorseState({
-      text: morse.decode(newMorseText, { priority: mState.priority }),
-      morseText: newMorseText,
-      isJpMorse: mState.isJpMorse,
-      priority: mState.priority
-    });
-  }
-
-  const updateMorseLanguage = (mState: MorseState, isJpMorse: boolean) => {
-    const newPriority: number = isJpMorse ? 10 : 1;
-    setMorseState({
-      text: morse.decode(mState.morseText, { priority: newPriority }),
-      morseText: morse.encode(mState.text, { priority: newPriority }),
-      isJpMorse: isJpMorse,
-      priority: newPriority
-    })
-  }
+  const [morseState, morse] = useMorse();
 
   return (
     <Box m={2} className={classes.morseForm}>
@@ -76,7 +34,7 @@ const App: React.FC = () => {
             control={
               <Switch
                 checked={morseState.isJpMorse}
-                onChange={() => updateMorseLanguage(morseState, !morseState.isJpMorse)}
+                onChange={() => morse.jpMode(!morseState.isJpMorse)}
                 color="primary"
               />
             }
@@ -90,13 +48,13 @@ const App: React.FC = () => {
               label="Text"
               variant="outlined"
               value={morseState.text}
-              onChange={e => encodeMorse(morseState, e.target.value)}
+              onChange={e => morse.encodeMorse(e.target.value)}
             />
             <TextField
               label="Morse"
               variant="outlined"
               value={morseState.morseText}
-              onChange={e => decodeMorse(morseState, e.target.value)}
+              onChange={e => morse.decodeMorse(e.target.value)}
             />
           </Box>
         </Grid>
