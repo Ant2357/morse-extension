@@ -45,12 +45,18 @@ const App: React.FC = () => {
         <Grid item xs={12}>
           <Box mt={1}>
             <TextField
+              multiline={true}
+              fullWidth={true}
               label="Text"
               variant="outlined"
               value={morseState.text}
               onChange={e => morse.encodeMorse(e.target.value)}
             />
+          </Box>
+          <Box mt={1}>
             <TextField
+              multiline={true}
+              fullWidth={true}
               label="Morse"
               variant="outlined"
               value={morseState.morseText}
