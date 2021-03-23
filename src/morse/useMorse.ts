@@ -2,17 +2,20 @@ import { useState } from 'react';
 // @ts-ignore
 import morse from 'morse-decoder';
 
-type MorseState = {
+export type MorseState = {
   text: string;
   morseText: string;
   isJpMorse: boolean;
   priority: number;
 };
 
-interface MorseFuncs {
+export interface MorseFuncs {
   encodeMorse: (newText: string) => void;
   decodeMorse: (newMorseText: string) => void;
   jpMode: (isJpMorse: boolean) => void;
+  playMorseAudio: (text: string) => void;
+  downloadMorseAudio: (text: string) => void;
+  tweetMorse: (morseText: string) => void;
 };
 
 export const useMorse = (): [MorseState, MorseFuncs] => {
@@ -51,5 +54,26 @@ export const useMorse = (): [MorseState, MorseFuncs] => {
     })
   }
 
-  return [morseState, { encodeMorse, decodeMorse, jpMode }];
+  const playMorseAudio = (text: string): void => {
+    try {
+      morse.audio(text).play();
+    } catch (_) {
+      alert("モールス信号の再生に失敗しました。");
+    }
+  };
+
+  const downloadMorseAudio = (text: string): void => {
+    try {
+      morse.audio(text).exportWave();
+    } catch (_) {
+      alert("モールス信号のダウンロードに失敗しました。");
+    }
+  };
+
+  const tweetMorse = (morseText: string): void => {
+    const tweet: string = encodeURIComponent(`${morseText}`);
+    window.open(`https://twitter.com/intent/tweet?text=${tweet}`, "_blank");
+  }
+
+  return [morseState, { encodeMorse, decodeMorse, jpMode, playMorseAudio, downloadMorseAudio, tweetMorse }];
 };
