@@ -18,10 +18,10 @@ export interface MorseFuncs {
   tweetMorse: (morseText: string) => void;
 };
 
-export const useMorse = (): [MorseState, MorseFuncs] => {
+export const useMorse = (initText: string): [MorseState, MorseFuncs] => {
   const [morseState, setMorseState] = useState<MorseState>({
-    text: "SOS",
-    morseText: morse.encode("SOS"),
+    text: initText,
+    morseText: morse.encode(initText),
     isJpMorse: false,
     priority: 1
   });

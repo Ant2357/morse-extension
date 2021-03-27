@@ -3,7 +3,7 @@ import { useMorse } from 'morse/useMorse';
 import MorseForm from 'components/MorseForm';
 
 const App: React.FC = () => {
-  const [morseState, morse] = useMorse();
+  const [morseState, morse] = useMorse("SOS");
   return (
     <MorseForm
       morseState={morseState}
