@@ -62,9 +62,16 @@ export const useMorse = (initText: string): [MorseState, MorseFuncs] => {
     }
   };
 
-  const downloadMorseAudio = (text: string): void => {
+  const downloadMorseAudio = async (text: string) => {
     try {
-      morse.audio(text).exportWave();
+      const url = await morse.audio(text).getWaveUrl();
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.download = 'morse.mp3';
+      a.href = url;
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     } catch (_) {
       alert("モールス信号のダウンロードに失敗しました。");
     }
